@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDpedia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ID Card Flashing Animation */
+        .slider-bg {
+            background-size: cover;
+            background-position: center;
+            animation: flashCards 10s infinite alternate;
+        }
+        @keyframes flashCards {
+            0% { background-image: url('https://images.unsplash.com/photo-1633409361618-c73427e4e206?auto=format&fit=crop&w=800&q=80'); opacity: 0.8;}
+            50% { background-image: url('https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80'); opacity: 0.9;}
+            100% { background-image: url('https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'); opacity: 0.8;}
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <div id="home-page" class="min-h-screen flex flex-col justify-between slider-bg relative">
+        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+        
+        <div class="relative z-10 flex flex-col items-center justify-center flex-grow mt-10">
+            <h1 class="text-6xl font-bold text-white mb-2 tracking-wider">IDpedia</h1>
+            <p class="text-gray-300 mb-10 text-lg">Smart ID Card Data Management</p>
+
+            <div class="space-y-4 w-64">
+                <button onclick="showSection('official-login')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition">
+                    1. Official Sign In
+                </button>
+                <button onclick="showSection('school-login')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition">
+                    2. School Sign In
+                </button>
+            </div>
+        </div>
+
+        <footer class="relative z-10 bg-gray-900 bg-opacity-90 text-white text-center py-6 mt-10">
+            <h3 class="font-bold text-xl mb-2">IDpedia</h3>
+            <p>Kuttiady, Kozhikode, Vadakara</p>
+            <p>Email: roopamkty@gmail.com | Mob: +91 989590834</p>
+        </footer>
+    </div>
+
+    <div id="official-login" class="min-h-screen flex items-center justify-center hidden bg-gray-200">
+        <div class="bg-white p-8 rounded-xl shadow-xl w-96">
+            <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">Official Sign In</h2>
+            <input type="text" id="off-user" placeholder="User ID" class="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" id="off-pass" placeholder="Password" class="w-full mb-6 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="officialLogin()" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700">Go to sign in</button>
+            <button onclick="showSection('home-page')" class="w-full mt-4 text-gray-500 text-sm hover:underline">Back to Home</button>
+            <p id="off-err" class="text-red-500 text-sm mt-2 text-center hidden">Invalid User ID or Password</p>
+        </div>
+    </div>
+
+    <div id="official-dashboard" class="min-h-screen hidden bg-gray-50 p-6">
+        <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold text-blue-700">Official Dashboard</h2>
+                <button onclick="showSection('home-page')" class="bg-red-500 text-white px-4 py-1 rounded">Logout</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg mb-4">Add New School</h3>
+                    <input type="text" id="school-name" placeholder="School Name" class="w-full mb-3 px-3 py-2 border rounded">
+                    <input type="text" id="school-code" placeholder="School Code" class="w-full mb-3 px-3 py-2 border rounded">
+                    <h4 class="font-semibold text-sm mt-2 mb-1">Teacher Login Details:</h4>
+                    <input type="text" id="teacher-user" placeholder="Teacher Username" class="w-full mb-3 px-3 py-2 border rounded">
+                    <input type="password" id="teacher-pass" placeholder="Teacher Password" class="w-full mb-3 px-3 py-2 border rounded">
+                    <button onclick="saveSchool()" class="bg-green-600 text-white px-4 py-2 rounded w-full font-bold">Save School Details</button>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-lg mb-4">Download Data</h3>
+                    <input type="text" id="export-class" placeholder="Enter Class (e.g. 1std)" class="w-full mb-3 px-3 py-2 border rounded">
+                    <button class="bg-green-700 text-white px-4 py-2 rounded w-full font-bold mb-3" onclick="alert('Excel file will be downloaded for the selected class (Backend required)')">Download Excel Data</button>
+                    <button class="bg-blue-700 text-white px-4 py-2 rounded w-full font-bold" onclick="alert('Photos will be downloaded as ZIP for the selected class (Backend required)')">Download Photos (ZIP)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="school-login" class="min-h-screen flex items-center justify-center hidden bg-gray-200">
+        <div class="bg-white p-8 rounded-xl shadow-xl w-96">
+            <h2 class="text-2xl font-bold mb-6 text-center text-green-600">School Sign In</h2>
+            <input type="text" id="sch-user" placeholder="Username" class="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            <input type="password" id="sch-pass" placeholder="Password" class="w-full mb-6 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+            <button onclick="schoolLogin()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700">Login</button>
+            <button onclick="showSection('home-page')" class="w-full mt-4 text-gray-500 text-sm hover:underline">Back to Home</button>
+            <p id="sch-err" class="text-red-500 text-sm mt-2 text-center hidden">Invalid access. Contact Official.</p>
+        </div>
+    </div>
+
+    <div id="school-dashboard" class="min-h-screen hidden bg-gray-50 p-6">
+        <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold text-green-700">Student ID Database</h2>
+                <button onclick="showSection('home-page')" class="bg-red-500 text-white px-4 py-1 rounded">Logout</button>
+            </div>
+
+            <form id="studentForm" class="space-y-4" onsubmit="saveStudent(event)">
+                <input type="hidden" id="edit-id">
+                
+                <div>
+                    <label class="block text-sm font-bold mb-1">Student Name</label>
+                    <input type="text" id="std-name" required class="w-full px-3 py-2 border rounded">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold mb-1">Class</label>
+                    <input type="text" id="std-class" placeholder="e.g. 1std, 2nd_std" required class="w-full px-3 py-2 border rounded">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-1">Gender</label>
+                    <select id="std-gender" onchange="updateGuardianLabel()" required class="w-full px-3 py-2 border rounded bg-white">
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-1">
+                        <span id="guardian-prefix">Guardian</span> Name
+                    </label>
+                    <input type="text" id="std-guardian" required class="w-full px-3 py-2 border rounded">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">House Name (വീട്ടുപേര്)</label>
+                        <input type="text" id="std-house" required class="w-full px-3 py-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Place (സ്ഥലം)</label>
+                        <input type="text" id="std-place" required class="w-full px-3 py-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Mobile Number</label>
+                        <input type="tel" id="std-mobile" required class="w-full px-3 py-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Admission Number</label>
+                        <input type="text" id="std-admn" required class="w-full px-3 py-2 border rounded">
+                    </div>
+                </div>
+
+                <div class="border p-4 rounded bg-gray-50">
+                    <label class="block text-sm font-bold mb-3">Upload Photo (Saved as Admission Number)</label>
+                    <div class="flex space-x-4">
+                        <div class="w-1/2 relative">
+                            <label class="flex justify-center items-center bg-blue-100 text-blue-700 py-3 rounded cursor-pointer hover:bg-blue-200">
+                                📁 Choose from Gallery
+                                <input type="file" id="photo-gallery" accept="image/*" class="hidden" onchange="handlePhoto(this)">
+                            </label>
+                        </div>
+                        <div class="w-1/2 relative">
+                            <label class="flex justify-center items-center bg-green-100 text-green-700 py-3 rounded cursor-pointer hover:bg-green-200">
+                                📷 Open Camera
+                                <input type="file" id="photo-camera" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this)">
+                            </label>
+                        </div>
+                    </div>
+                    <p id="photo-status" class="text-sm text-gray-500 mt-2 text-center"></p>
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded hover:bg-green-700">Save Data</button>
+            </form>
+
+            <div class="mt-8 border-t pt-6">
+                <h3 class="text-lg font-bold mb-4">Saved Students (Click to Edit/Replace)</h3>
+                <div id="saved-students" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPhotoData = null;
+        let loadedStudents = []; // ബാക്കെൻഡിൽ നിന്ന് വരുന്ന കുട്ടികളെ താൽക്കാലികമായി സൂക്ഷിക്കാൻ
+
+        // Navigation
+        function showSection(sectionId) {
+            const sections = ['home-page', 'official-login', 'official-dashboard', 'school-login', 'school-dashboard'];
+            sections.forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Official Login Logic
+        function officialLogin() {
+            const user = document.getElementById('off-user').value;
+            const pass = document.getElementById('off-pass').value;
+            if (user === 'Rajeesh' && pass === '9083') {
+                document.getElementById('off-err').classList.add('hidden');
+                showSection('official-dashboard');
+                document.getElementById('off-user').value = '';
+                document.getElementById('off-pass').value = '';
+            } else {
+                document.getElementById('off-err').classList.remove('hidden');
+            }
+        }
+
+        // Save School Logic (Mock)
+        function saveSchool() {
+            const u = document.getElementById('teacher-user').value;
+            const p = document.getElementById('teacher-pass').value;
+            if(u && p) {
+                localStorage.setItem('schoolUser', u);
+                localStorage.setItem('schoolPass', p);
+                alert('School & Teacher details saved successfully!');
+            } else {
+                alert('Please enter username and password');
+            }
+        }
+
+        // School Login Logic
+        function schoolLogin() {
+            const u = document.getElementById('sch-user').value;
+            const p = document.getElementById('sch-pass').value;
+            const savedU = localStorage.getItem('schoolUser');
+            const savedP = localStorage.getItem('schoolPass');
+            
+            if (savedU && savedP && u === savedU && p === savedP) {
+                document.getElementById('sch-err').classList.add('hidden');
+                showSection('school-dashboard');
+                document.getElementById('sch-user').value = '';
+                document.getElementById('sch-pass').value = '';
+                renderStudents();
+            } else {
+                document.getElementById('sch-err').classList.remove('hidden');
+            }
+        }
+
+        // Gender to S/o, D/o Logic
+        function updateGuardianLabel() {
+            const gender = document.getElementById('std-gender').value;
+            const label = document.getElementById('guardian-prefix');
+            if (gender === 'Male') {
+                label.innerText = 'S/o';
+            } else if (gender === 'Female') {
+                label.innerText = 'D/o';
+            } else {
+                label.innerText = 'Guardian';
+            }
+        }
+
+        // Photo Handling
+        function handlePhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentPhotoData = e.target.result;
+                    document.getElementById('photo-status').innerText = "Photo Selected: " + input.files[0].name;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Save Student Logic (Connecting to Backend)
+        function saveStudent(e) {
+            e.preventDefault();
+            const admn = document.getElementById('std-admn').value;
+            
+            const student = {
+                admn: admn,
+                name: document.getElementById('std-name').value,
+                cls: document.getElementById('std-class').value,
+                gender: document.getElementById('std-gender').value,
+                guardian: document.getElementById('std-guardian').value,
+                house: document.getElementById('std-house').value,
+                place: document.getElementById('std-place').value,
+                mobile: document.getElementById('std-mobile').value,
+                photo: currentPhotoData 
+            };
+
+            // ബാക്കെൻഡിലേക്ക് POST റിക്വസ്റ്റ് അയക്കുന്നു
+            fetch('http://localhost:3000/api/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(student)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById('studentForm').reset();
+                currentPhotoData = null;
+                document.getElementById('photo-status').innerText = "";
+                document.getElementById('guardian-prefix').innerText = "Guardian";
+                renderStudents(); // ലിസ്റ്റ് പുതുക്കുന്നു
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("ബാക്കെൻഡിലേക്ക് സേവ് ചെയ്യാൻ സാധിച്ചില്ല!");
+            });
+        }
+
+        // Render Saved Data from Backend
+        function renderStudents() {
+            const container = document.getElementById('saved-students');
+            container.innerHTML = '<p class="text-center text-gray-500">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>';
+            
+            // ബാക്കെൻഡിൽ നിന്ന് ലിസ്റ്റ് ചോദിക്കുന്നു
+            fetch('http://localhost:3000/api/students')
+                .then(response => response.json())
+                .then(students => {
+                    loadedStudents = students; // എഡിറ്റ് ചെയ്യാൻ വേണ്ടി സൂക്ഷിക്കുന്നു
+                    container.innerHTML = '';
+                    
+                    if(students.length === 0) {
+                        container.innerHTML = '<p class="text-center text-gray-500">കുട്ടികളുടെ വിവരങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>';
+                        return;
+                    }
+
+                    students.forEach(std => {
+                        const div = document.createElement('div');
+                        div.className = "flex items-center p-3 border rounded bg-white hover:bg-gray-100 cursor-pointer shadow-sm";
+                        div.onclick = () => editStudent(std.admn);
+                        
+                        const img = std.photo ? `<img src="${std.photo}" class="w-12 h-12 rounded object-cover mr-4">` : `<div class="w-12 h-12 bg-gray-200 rounded mr-4 flex items-center justify-center text-xs">No Pic</div>`;
+                        
+                        div.innerHTML = `
+                            ${img}
+                            <div class="flex-grow">
+                                <p class="font-bold">${std.name} <span class="text-sm font-normal text-gray-500">(Admn: ${std.admn})</span></p>
+                                <p class="text-sm text-gray-600">Class: ${std.cls} | Mob: ${std.mobile}</p>
+                            </div>
+                            <div class="text-blue-500 font-bold text-sm">✎ Edit</div>
+                        `;
+                        container.appendChild(div);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    container.innerHTML = '<p class="text-center text-red-500">ഡാറ്റ ലോഡ് ചെയ്യാൻ സാധിച്ചില്ല.</p>';
+                });
+        }
+
+        // Edit Data
+        function editStudent(admn) {
+            const std = loadedStudents.find(s => s.admn === admn);
+            if(std) {
+                document.getElementById('std-name').value = std.name;
+                document.getElementById('std-class').value = std.cls;
+                document.getElementById('std-gender').value = std.gender;
+                updateGuardianLabel();
+                document.getElementById('std-guardian').value = std.guardian;
+                document.getElementById('std-house').value = std.house;
+                document.getElementById('std-place').value = std.place;
+                document.getElementById('std-mobile').value = std.mobile;
+                document.getElementById('std-admn').value = std.admn;
+                currentPhotoData = std.photo;
+                document.getElementById('photo-status').innerText = "Existing photo loaded. Upload new to replace.";
+                window.scrollTo(0,0);
+            }
+        }
+    </script>
+</body>
+</html>
